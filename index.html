@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>济南三日 · 接待手册</title>
+<style>
+  :root{
+    --bg:#f6f4ef; --card:#ffffff; --ink:#202124; --sub:#5f6368; --line:#e6e2d8;
+    --d1:#1a73e8; --d2:#d93025; --d3:#188038; --accent:#8a5a00;
+    --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 14px rgba(0,0,0,.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#121417; --card:#1c2026; --ink:#e8eaed; --sub:#9aa0a6; --line:#2c3138;
+      --d1:#6ea8ff; --d2:#ff8673; --d3:#5cc07a; --accent:#e0b45c;
+      --shadow:0 1px 3px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3); }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.75;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+  header.top{padding:28px 4px 8px}
+  header.top .kicker{font-size:13px;letter-spacing:.2em;color:var(--sub)}
+  header.top h1{font-size:30px;line-height:1.3;margin-top:6px}
+  header.top p.sub{color:var(--sub);font-size:14px;margin-top:6px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:18px 18px;margin:18px 0}
+  .card h2{font-size:18px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .card h2 .dot{width:10px;height:10px;border-radius:50%}
+  /* 此刻关注 */
+  #now{background:linear-gradient(135deg,#123a6d,#1a73e8);color:#fff;border:none}
+  @media (prefers-color-scheme: dark){#now{background:linear-gradient(135deg,#0d2c52,#2f6fd0)}}
+  #now .label{font-size:13px;opacity:.85}
+  #now .next{font-size:17px;font-weight:600;margin-top:4px}
+  #count{display:flex;gap:10px;margin-top:12px}
+  #count .cell{background:rgba(255,255,255,.14);border-radius:10px;padding:8px 0;flex:1;text-align:center}
+  #count .num{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+  #count .unit{font-size:11px;opacity:.8}
+  /* 地图 */
+  #mapsvg{width:100%;height:auto;display:block}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--sub);margin-top:8px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:12px;height:12px;border-radius:50%;display:inline-block}
+  /* 确认信息 */
+  .kv{display:grid;grid-template-columns:64px 1fr;gap:4px 10px;font-size:14.5px}
+  .kv b{color:var(--sub);font-weight:600}
+  /* 逐日 */
+  .dayhead{display:flex;align-items:baseline;gap:10px;margin:26px 4px 4px}
+  .dayhead .chip{color:#fff;font-size:13px;font-weight:700;border-radius:8px;padding:2px 10px}
+  .dayhead h2{font-size:20px}
+  .dayhead .theme{color:var(--sub);font-size:13px}
+  .stop{display:grid;grid-template-columns:64px 1fr;gap:12px;padding:14px 4px;border-bottom:1px dashed var(--line)}
+  .stop:last-child{border-bottom:none}
+  .stop .time{font-size:13px;color:var(--sub);font-variant-numeric:tabular-nums;padding-top:3px;text-align:right}
+  .stop .name{font-size:16px;font-weight:700}
+  .stop .name .no{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;
+    border-radius:50%;color:#fff;font-size:12px;margin-right:7px;vertical-align:2px}
+  .stop .brief{font-size:14px;color:var(--sub);margin-top:2px}
+  .stop .actions{margin-top:6px;display:flex;gap:14px;font-size:13.5px;flex-wrap:wrap}
+  .stop a{color:var(--d1);text-decoration:none}
+  details{margin-top:8px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  details summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--accent);list-style:none}
+  details summary::before{content:"📖 ";} 
+  details[open] summary{margin-bottom:6px}
+  details .story{font-size:14.5px}
+  /* 列表 */
+  ul.plain{list-style:none;font-size:14.5px}
+  ul.plain li{padding:8px 4px;border-bottom:1px dashed var(--line);display:flex;gap:8px}
+  ul.plain li:last-child{border-bottom:none}
+  ul.plain li::before{content:"·";color:var(--sub);font-weight:700}
+  footer{color:var(--sub);font-size:12.5px;text-align:center;margin-top:30px;line-height:1.9}
+  .tag{display:inline-block;font-size:11.5px;border:1px solid var(--line);border-radius:6px;padding:0 6px;color:var(--sub);margin-left:6px;vertical-align:1px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="kicker">QUANCHENG · JINAN</div>
+  <h1>济南三日 · 接待手册</h1>
+  <p class="sub">四面荷花三面柳，一城山色半城湖 —— 住世茂 · 全程步行＋短途打车</p>
+</header>
+
+<!-- 此刻关注 -->
+<section class="card" id="now">
+  <div class="label">此刻关注</div>
+  <div class="next" id="nextEvent">Day 1 中午 · 朋友抵达济南，午饭超意兴</div>
+  <div id="count">
+    <div class="cell"><div class="num" id="cd-d">--</div><div class="unit">天</div></div>
+    <div class="cell"><div class="num" id="cd-h">--</div><div class="unit">时</div></div>
+    <div class="cell"><div class="num" id="cd-m">--</div><div class="unit">分</div></div>
+    <div class="cell"><div class="num" id="cd-s">--</div><div class="unit">秒</div></div>
+  </div>
+</section>
+
+<!-- 总览地图 -->
+<section class="card">
+  <h2><span class="dot" style="background:var(--d1)"></span>行程总览</h2>
+  <svg id="mapsvg" viewBox="0 0 760 640" role="img" aria-label="行程总览地图"></svg>
+  <div class="legend">
+    <span><i style="background:var(--d1)"></i>Day 1 下午＋夜游</span>
+    <span><i style="background:var(--d2)"></i>Day 2 泉水＋商埠</span>
+    <span><i style="background:var(--d3)"></i>Day 3 名泉＋千佛山</span>
+    <span>⌂ 每晚住世茂</span>
+  </div>
+</section>
+
+<!-- 已确认信息 -->
+<section class="card">
+  <h2>已确认信息</h2>
+  <div class="kv">
+    <b>住宿</b><span>济南世茂广场（泉城路）· 三晚</span>
+    <b>Day1 午</b><span>超意兴（把子肉＋大米干饭）</span>
+    <b>Day1 晚</b><span>金春禧 · 世茂店（爆炒腰花、九转大肠）</span>
+    <b>门票</b><span>趵突泉 40 元；超然楼登楼 40 元；山东博物馆免费（公众号预约，周一闭馆）；五龙潭 / 大明湖 / 黑虎泉 / 曲水亭街 / 老商埠均免费</span>
+    <b>预约</b><span>山东博物馆、济南开埠博物馆：免费但需公众号预约，周一闭馆</span>
+  </div>
+</section>
+
+<!-- ============ Day 1 ============ -->
+<div class="dayhead"><span class="chip" style="background:var(--d1)">Day 1</span><h2>解放阁 · 黑虎泉 · 夜游老城</h2></div>
+<div class="dayhead theme">中午抵达 → 午饭休息 → 下午出门 → 晚饭后胡同穿泉 → 超然楼夜景</div>
+<section class="card">
+
+  <div class="stop"><div class="time">12:00</div><div>
+    <div class="name">抵达济南 · 午饭超意兴</div>
+    <div class="brief">把子肉＋大米干饭，济南人的日常标配，吃完回酒店休息</div>
+    <details><summary>把子肉的故事</summary><div class="story">一斤带皮五花肉切八块，用蒲草捆成"把"（名字由此而来），不放盐、全靠好酱油，猛火开锅文火炖再焖数小时，讲究"肥而不腻、瘦而不柴"。可考的脉络是 1904 年济南开商埠后，赵殿龙挑担卖"大米干饭＋把子肉"，后来开出挂"名驰历下"匾的赵家干饭铺——穿绸缎的商人和扎腰的贩夫走卒同吃一锅米、一坛肉。超意兴前身是 1912 年的老字号"正泰恒"，1993 年从 10 平米小店起家，如今一天卖出过 10 万块把子肉，制作技艺已入选山东省级非遗；济南人给它起了个外号叫"超级意大利复兴餐厅"。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">15:30</div><div>
+    <div class="name"><span class="no" style="background:var(--d1)">1</span>解放阁</div>
+    <div class="brief">老济南城东南角 · 1948 年突破口 · 登阁看护城河</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.033627,36.663178&name=解放阁" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">济南老城墙是明洪武年间包砖建成的，1950 年起一段段拆除，五百多年的城墙几乎扫平，唯独留下东南角这一块墙基，后来在上面建起解放阁，阁名由陈毅题写。为什么留东南角？1948 年 9 月的济南战役，华东野战军就是从城东南角突破内城城墙的。战役 9 月 16 日打响、24 日结束，只打了八天八夜，守将王耀武化装逃跑在寿光被俘——济南是解放战争中解放军攻占的第一个省会城市，一般认为它拉开了三大战役战略决战的序幕，所以 9 月 24 日至今是济南的解放纪念日。登阁能看护城河全景，傍晚从河对岸拍阁楼和倒影最出片。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">16:10</div><div>
+    <div class="name"><span class="no" style="background:var(--d1)">2</span>黑虎泉</div>
+    <div class="brief">三只石虎口喷水 · 接一瓶泉水带走</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.033525,36.662414&name=黑虎泉" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">黑虎泉是济南四大泉群里最"野"的一个——泉池藏在地下，水经暗渠从三尊石雕虎头里喷出来，声如虎啸，数米外都听得见。它早在金代《名泉碑》里就位列七十二名泉，名字的通行说法是泉声如虎啸、水底巨石如虎踞。明代晏璧写过它："石蟠水府色苍苍，深处浑如黑虎藏。"每天从早到晚，本地人提着大桶小桶在取水点排队打水，回家烧水泡茶——这是黑虎泉从明代到今天没变过的功能。一定带朋友接一瓶泉水尝尝，清冽微甘。沿岸往西走还有琵琶泉、九女泉、五莲泉（泉池在河中央小岛上）。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">16:40</div><div>
+    <div class="name"><span class="no" style="background:var(--d1)">3</span>泉水浴场</div>
+    <div class="brief">泳池里灌的就是泉水 · 夏季免费开放</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.034490,36.662695&name=泉水浴场" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">就在解放阁旁边的护城河北岸，泳池引的是护城河的泉水，夏天免费开放——别的城市这水是矿泉水，在这儿是洗澡水。泉水恒温 18℃ 左右，冬暖夏凉，所以济南人愿意大清早来游泳。路过指给朋友看一眼就够震撼。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">17:00</div><div>
+    <div class="name"><span class="no" style="background:var(--d1)">4</span>宽厚里</div>
+    <div class="brief">翻新的历史街区 · 先逛一圈垫垫肚子</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.030905,36.663559&name=宽厚里" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">在老宽厚所街的街巷肌理上翻新的历史街区，四合院尺度、青石板路，是济南这几年夜生活最热闹的地方。逛的时候留个伏笔：宽厚里再往北的老城中心，明清两代整整三百年都是王府和巡抚衙门——吃完晚饭，就从那座王府的墙外走一圈。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">18:00</div><div>
+    <div class="name">晚饭 · 金春禧（世茂）</div>
+    <div class="brief">爆炒腰花、九转大肠、奶汤蒲菜</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.030577,36.664925&name=济南世茂广场" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>点菜时讲什么</summary><div class="story">九转大肠是光绪年间济南九华楼的首创，取"九转金丹"之意，酸甜苦辣咸五味俱全；爆炒腰花考刀工火候；奶汤蒲菜的蒲菜是大明湖里长的，出了济南几乎吃不到。鲁菜是八大菜系之首，济南菜又是鲁菜的底子。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">19:10</div><div>
+    <div class="name">沿泉城路向西<span class="tag">路过讲解</span></div>
+    <div class="brief">老济南城的东西大街 · 金街兴衰</div>
+    <details><summary>讲解词</summary><div class="story">脚下这条路就是老济南城的东西大街，1965 年由 11 条老街巷合并命名，明清时分段叫院西大街、院东大街、府东大街——"院"指巡抚衙门，"府"指济南府衙，省、府、县三级官署全在路北。瑞蚨祥（1862）、宏济堂（1907）这些老字号都开在这儿。2002 年改成 50 米宽的步行街，国庆开街七天涌进 200 万人次，人称"金街"；2025–2026 年又做了整体改造，换了海阳红花岗岩路面，2026 年 8 月刚全段恢复通车——脚下踩的就是新路面。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">19:20</div><div>
+    <div class="name"><span class="no" style="background:var(--d1)">5</span>西更道街</div>
+    <div class="brief">德王府西墙外 · 透景窗看珍珠泉</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.024714,36.665457&name=西更道街" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">从泉城路北转进这条巷子，就到了明代德王府的西墙外。路北挂国徽的琉璃瓦牌楼是珍珠泉大院——明代德王府、清代巡抚衙门、民国省政府、今天的省人大。德王府当年占老城三分之一，南至泉城路、北到后宰门、东至县西巷、西至芙蓉街；清代巡抚周有德在王府废墟上建衙门，连青州衡王府的木石都拆来用了。西更道街就是沿大院西墙的巷子，"更道"即旧时更夫巡逻的通道。重点：2024 年 10 月起，珍珠泉景区在西墙上开了透景窗，趴在墙窗上就能看见珍珠泉——这个院子封闭了四五百年，乾隆说过"趵突固已佳，珍珠擅天然"，他认为这泉比趵突泉还好。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">19:40</div><div>
+    <div class="name"><span class="no" style="background:var(--d1)">6</span>起凤桥 · 王府池子</div>
+    <div class="brief">濯缨泉 · 藏在民居院子里的名泉</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.023733,36.667457&name=王府池子" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">王府池子大名濯缨泉，名字取自《孟子》里的古歌"沧浪之水清兮，可以濯我缨"，金代《名泉碑》、明代晏璧七十二泉诗都收录了它。它原本是德王府院内的水景——金元时期水势大到可以荡舟，叫"濯缨湖"；1666 年建巡抚衙门时规模比王府小，没把它圈进去，这汪水从此回到老百姓中间，湖边渐渐盖满民居，缩成今天这一亩见方的池子——"旧时王府院中池，流落民间百姓家"。池水向北流成曲水亭街的水渠，最后进大明湖。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">20:00</div><div>
+    <div class="name"><span class="no" style="background:var(--d1)">7</span>曲水亭街</div>
+    <div class="brief">曲水流觞 · 夜景最有味道</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.024334,36.670581&name=曲水亭街" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">街名出自王羲之《兰亭集序》的"曲水流觞"——王府池子、珍珠泉的水沿街边明渠北流，旧时文人沿渠而坐，酒杯放水上漂流，停在谁面前谁赋诗。晚上亮灯后青砖老宅、垂柳拂水，比白天更有味道。刘鹗《老残游记》里"家家泉水，户户垂杨"，写的就是这一带。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">20:20</div><div>
+    <div class="name"><span class="no" style="background:var(--d1)">8</span>大明湖南岸</div>
+    <div class="brief">泉水汇成的湖 · 历下亭与杜甫</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.023837,36.671976&name=大明湖南门" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">大明湖由珍珠泉、芙蓉泉、王府池子诸泉汇成，从北宋曾巩主持修建的北水门泄入护城河，水位千年恒定，冬天不结冰、夏天不满溢——在北方城市里独一份。南岸最值得讲的是历下亭：北魏时就有，唐天宝四年（745 年）杜甫来济南，与北海太守李邕在亭中宴饮，写下"海右此亭古，济南名士多"——"济南名士多"这五个字从此成了济南的城市广告语，用了快一千三百年。湖西北岸的铁公祠纪念的是靖难之役死守济南、逼得朱棣绕城走的铁铉；铁公祠小沧浪亭的廊壁上刻着那副最著名的对联"四面荷花三面柳，一城山色半城湖"——嘉庆九年（1804 年）山东学政刘凤诰离任，巡抚铁保在此设宴饯行，刘凤诰即席撰联、铁保亲笔书写，想近看石刻可以白天补一趟北岸。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">20:50</div><div>
+    <div class="name"><span class="no" style="background:var(--d1)">9</span>超然楼 · 夜景</div>
+    <div class="brief">江北第一楼 · 亮灯瞬间全场欢呼</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.031996,36.675188&name=超然楼" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">超然楼始建于元代（约 1307–1320 年），主人是翰林大学士、济南人李泂，楼名效仿苏轼的超然台，取"离尘脱俗"之意；1639 年清军攻克济南时毁于战火，清代复建过一次又没保住，现在这座 51.7 米高、共七层的"江北第一楼"是 2008 年按旧址重建的，2021 年入选中国历史文化名楼，张养浩、蒲松龄都在这儿写过诗。2023 年春节后它的亮灯仪式在网上爆火，亮灯瞬间全场欢呼——用这一幕给第一天收尾，正好。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">21:30</div><div>
+    <div class="name">步行回世茂</div>
+    <div class="brief">体力好可先在黑虎泉码头坐护城河游船夜航（全国唯一泉水护城河，过船闸像坐电梯）</div>
+  </div></div>
+</section>
+
+<!-- ============ Day 2 ============ -->
+<div class="dayhead"><span class="chip" style="background:var(--d2)">Day 2</span><h2>五龙潭 · 趵突泉 · 老商埠 · 大观园</h2></div>
+<div class="dayhead theme">上午四大泉群看两个 → 中午嗦肥蛤 → 下午商埠旧梦 → 晚上换口墨西哥菜</div>
+<section class="card">
+
+  <div class="stop"><div class="time">08:30</div><div>
+    <div class="name"><span class="no" style="background:var(--d2)">10</span>五龙潭</div>
+    <div class="brief">免费 · 秦琼故居传说 · 水质最好的泉群</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.014637,36.665992&name=五龙潭公园" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">济南四大泉群里水质最好的一个，底下压着一座传说中的国公府——民间传说五龙潭是门神秦琼的故居。秦琼是济南历城人，元代济南人张养浩在《复龙祥观施田记》里就记了："闻故老言，此唐胡国公秦琼第遗址，一夕雷雨，溃而为渊。"清代学者桂馥也写过"历城西门外唐翼国公故宅，一夕化为渊，即五龙潭也"。园里至今立着"唐左武卫大将军胡国公秦叔宝故宅"石碑，北侧有唐风四合院式的秦琼祠。两个加分细节：园里的月牙泉是七十二名泉中水位最高的泉，"月牙泉喷了，七十二泉就全喷了"；南边的回马泉，传说是秦琼的战马一蹄子踏出来的。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">10:00</div><div>
+    <div class="name"><span class="no" style="background:var(--d2)">11</span>趵突泉</div>
+    <div class="brief">门票 40 · 天下第一泉 · 李清照纪念馆（五龙潭南门出来过马路即到）</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.015893,36.661087&name=趵突泉" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">全中国唯一被皇帝亲口封为"天下第一"的泉。北魏郦道元《水经注》写它"泉源上奋，水涌若轮"——一千五百年前就是这个样子；"趵突"这个名字是北宋曾巩任齐州知州时起的，形容水往上蹿。乾隆南巡用趵突泉水泡了茶，嫌随行的玉泉水都没味道了，封它"天下第一泉"，还在泉边题了"激湍"二字。泉水恒温 18℃，冬天能看到"云雾润蒸"的白汽。园内李清照纪念馆必看：李清照是济南章丘人，"常记溪亭日暮，沉醉不知归路"写的就是这一带的荷塘；她和辛弃疾合称"济南二安"，一座城出了宋词婉约、豪放两派的两个顶峰。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">12:30</div><div>
+    <div class="name">午饭 · 三盛肥蛤</div>
+    <div class="brief">济南老牌肥蛤店 · 甜麻肥蛤 · 鸡蛋馒头片蘸汤</div>
+    <details><summary>讲解词</summary><div class="story">济南人的"深夜食堂"里最有名的一类就是肥蛤店，三盛是其中的老牌代表，从街边店开遍全城，还上过大众点评必吃榜。招牌是甜麻口味的肥蛤——蛤蜊个大肉肥，甜麻辣的酱汁裹满每一颗，嗦起来特别上头；隐藏吃法是点一份鸡蛋馒头片，吃完蛤用馒头片蘸着锅里的浓汤收尾，老济南都这么吃。不能吃辣就点甜辣微辣，配瓶冰啤酒，这顿就是地道的济南市井味。顺手可以接一个昨天讲过的知识点：济南靠泉水养出的口味偏爱"鲜咸回甜"，甜麻肥蛤正是这个路数。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">14:30</div><div>
+    <div class="name"><span class="no" style="background:var(--d2)">12</span>经三路 · 老商埠</div>
+    <div class="brief">小广寒 → 张采丞故居 → 爱心红绿灯 → 中山公园 → 开埠博物馆</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=116.994500,36.654500&name=融汇济南老商埠" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">1904 年德国人修的胶济铁路即将通车，德国商人盯上了济南。山东巡抚周馥与直隶总督袁世凯抢在通车前联名上奏，请求把济南、潍县、周村"自开"商埠——不是被条约逼着开，而是自己开门，行政、市政、司法主权全在中国人手里，济南因此成为中国第一个真正意义上自主开埠的内陆城市。商埠的路"东西向叫经、南北向叫纬"，和地理经纬恰好相反，取自纺织"长者为经、短者为纬"。经三路沿线：小广寒电影院（1904 年，济南第一家影院、全国第二座专业影院，全国重点文保，现在是电影博物馆＋餐厅）、张采丞故居（玫瑰花瀑打卡点）、皇宫照相馆（1932 年，老济南人的结婚照圣地）、经三纬三路口的爱心红绿灯、中山公园（1904 年开埠同年建的"商埠公园"，有旧书市场）、济南开埠博物馆（2025 年新开，免费需预约）。还有个"看不见"的地标：津浦铁路济南老火车站，哥特式建筑、1912 年建成，曾是远东最有名的火车站之一，1992 年被拆除，济南人念叨到今天。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">16:30</div><div>
+    <div class="name"><span class="no" style="background:var(--d2)">13</span>大观园</div>
+    <div class="brief">1931 年开业 · 晨光茶社 · 济南版"大世界"（老商埠步行约 10 分钟）</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=116.996425,36.660766&name=大观园" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">名字从《红楼梦》借来——"天上人间诸景备，芳园应锡大观名"，取"无所不包"的意思。这片地原是北洋军阀靳云鹏任山东都督时圈下的商埠荒地，1930 年商人张仪亭租下来，仿上海"大世界"建综合娱乐场，1931 年中秋节开业。鼎盛时有约 200 家店铺、200 多摊贩、四座剧场：第一剧场演京剧，第二剧场就是今天还在的大观电影院——济南最早放有声电影的地方，开业当天放的是胡蝶主演的《姊妹花》。最出名的是 1943 年孙少林创办的晨光茶社：马三立、刘宝瑞、张寿臣都在这登过台，济南因此和北京、天津并称相声界"三大码头"，行话"北京学艺，天津练活，济南踢门槛"——演员只有在济南观众面前站住了，才算真红。老济南有句话："登千佛山、游大明湖、看趵突泉、逛大观园"，把大观园和三大名胜并列，可见它在济南人心里的分量。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">18:30</div><div>
+    <div class="name">晚饭 · 卡塔斯 EL CACTUS（CCPARK 创意港店）</div>
+    <div class="brief">千佛山路 1 号 CCPARK 创意港西塔 12F · taco · 特色烤鸡 · 晚上有驻唱</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.028909,36.653906&name=卡塔斯CCPARK创意港店" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">EL CACTUS 卡塔斯，济南第一家正宗美式墨西哥餐吧，融合德克萨斯和墨西哥风味。招牌是各种 taco（手撕牛肉、蒜香鲜虾）、卡塔斯特色烤鸡、法基塔卷饼，甜品焦糖柠檬布丁口碑很好。它更像个社交场：晚上有驻唱、外国客人多、气氛在济南西餐厅里最放松的一档。带朋友来换个口味，给这两天鲁菜、肥蛤的行程画个不一样的句号。从大观园打车过去约 15 分钟，饭后离千佛山很近，正好接上第三天的行程。</div></details>
+  </div></div>
+</section>
+
+<!-- ============ Day 3 ============ -->
+<div class="dayhead"><span class="chip" style="background:var(--d3)">Day 3</span><h2>山东博物馆 · 千佛山</h2></div>
+<div class="dayhead theme">上午省博刷十大镇馆之宝 → 下午登山看全城 → 返程</div>
+<section class="card">
+
+  <div class="stop"><div class="time">09:00</div><div>
+    <div class="name"><span class="no" style="background:var(--d3)">14</span>山东博物馆</div>
+    <div class="brief">免费需公众号预约 · 十大镇馆之宝 · 打车约 25 分钟（城东经十路）</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.095731,36.658157&name=山东博物馆" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">经十路新馆 2010 年开放，免费但要在"山东博物馆"公众号提前预约（周一闭馆，30 号是周三，正常开放）。进馆先抬头：穹顶的设计灵感就来自镇馆之宝鲁国大玉璧。十大镇馆之宝集中在二楼，按 6→7→8 厅走基本能刷完：6 厅史前——红陶兽形壶（大汶口文化，五千年前的酒器，造型似猪似狐）和蛋壳黑陶高柄杯（龙山文化，杯壁最薄处仅 0.2 毫米，"黑如漆、亮如镜、薄如纸、硬如瓷"，四千年前的黑科技）；7 厅商周——亚丑钺（青州苏埠屯商墓出土，王权象征，人面纹咧着嘴笑，全馆第一网红）、颂簋（西周，152 字铭文完整记录周王册封仪式）、鲁国大玉璧（战国，曲阜鲁故城出土）、甲骨文（馆藏五千多片，4 片特级品）；8 厅汉代——银雀山汉简（《孙子兵法》和失传千年的《孙膑兵法》同墓出土，一锤定音终结了"孙子、孙膑是不是同一个人"的千年争论）、东平汉墓壁画（西汉宴饮图，色彩鲜艳，画里居然有烤串——山东人爱烧烤两千年实锤）。还有一件别漏：明鲁荒王朱檀墓出土的九旒冕，全国唯一存世的亲王冕冠实物——正好和第一天讲的珍珠泉明德王府接上，都是明代山东藩王的故事。推荐路线：二楼 6→7→8→9 厅，再回一楼看"鲁王之宝"展，全程约 3 小时。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">13:30</div><div>
+    <div class="name"><span class="no" style="background:var(--d3)">15</span>千佛山</div>
+    <div class="brief">打车约 15 分钟 · 兴国禅寺 · 山顶俯瞰全城</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.036098,36.639288&name=千佛山" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">古称历山，"舜耕历山"的传说就附着在这儿，济南"历下""历城"的地名都从它来。隋开皇年间沿崖壁凿了大批佛像，从此叫千佛山；山上兴国禅寺是隋唐遗风的千年古刹。半山腰"齐烟九点"坊——晴天能数出济南北边黄河岸边的九座山头，名字取自李贺"遥望齐州九点烟"；坊旁那棵虬枝唐槐，传说是秦琼的拴马桩。山顶俯瞰全城：千佛山、大明湖、老城一线排开，正好是这三天走过的所有地方。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">备选</div><div>
+    <div class="name">大明湖（白天场）</div>
+    <div class="brief">若省博逛得快或想轻松点，可替换上午行程：历下亭 · 铁公祠名联 · 稼轩祠</div>
+    <div class="actions"><a href="https://uri.amap.com/marker?position=117.014500,36.675500&name=大明湖历下亭" target="_blank" rel="noopener">高德导航 →</a></div>
+    <details><summary>讲解词</summary><div class="story">白天把第一晚没看细的补回来：历下亭（杜甫"海右此亭古，济南名士多"）；北岸铁公祠小沧浪亭看那副 1804 年的名联石刻"四面荷花三面柳，一城山色半城湖"——山东学政刘凤诰撰联、巡抚铁保书写，"三面柳"是写实（湖岸三面垂柳、唯北岸多建筑），"半城湖"也是写实（湖周约八里，老城总共才三平方公里出头）。南岸稼轩祠纪念辛弃疾——22 岁拉起两千人抗金的济南人，与李清照合称"济南二安"；老舍纪念馆在南岸附近，《济南的冬天》写的就是这座城。</div></details>
+  </div></div>
+
+  <div class="stop"><div class="time">17:00</div><div>
+    <div class="name">返程 / 送行</div>
+    <div class="brief">伴手礼：一小桶泉水、平阴玫瑰、周村烧饼</div>
+  </div></div>
+</section>
+
+<!-- 待办清单 -->
+<section class="card">
+  <h2>待办清单</h2>
+  <ul class="plain">
+    <li>9 月 30 日上午的山东博物馆：提前在"山东博物馆"公众号预约（周一闭馆，30 号周三正常开放）</li>
+    <li>济南开埠博物馆如要去，提前在公众号预约（周一闭馆）</li>
+    <li>出发前一天查超然楼当天亮灯时间，倒推晚饭节奏</li>
+    <li>确认泉水浴场当日开放情况</li>
+    <li>想坐护城河游船夜航，黑虎泉码头现场购票</li>
+    <li>查天气预报，备防晒 / 雨具；带空瓶子接泉水</li>
+  </ul>
+</section>
+
+<!-- 实用贴士 -->
+<section class="card">
+  <h2>实用贴士</h2>
+  <ul class="plain">
+    <li>老城景点之间基本步行可达，打车也很便宜；去千佛山、老商埠打车 15 分钟左右，去山东博物馆约 25 分钟</li>
+    <li>黑虎泉、曲水亭街、大明湖、五龙潭、老商埠全部免费；趵突泉 40 元、超然楼登楼 40 元</li>
+    <li>甜沫是咸的小米面糊，"甜沫不甜"是济南饭桌第一个冷知识</li>
+    <li>把子肉的正确吃法：肉汤浇在米饭上</li>
+    <li>济南护城河是全国唯一全部由泉水汇流的护城河，游船过五龙潭船闸有 2.58 米落差</li>
+    <li>博物馆类周一闭馆，行程避开周一</li>
+  </ul>
+</section>
+
+<footer>
+  济南三日 · 接待手册 ｜ 讲解词史料截至 2026 年 9 月<br>
+  本地单文件网页，可离线查看；点开"讲解词"即读，点"高德导航"即走
+</footer>
+
+</div>
+
+<script>
+/* ===== 倒计时（改这里：朋友抵达时间，带时区） ===== */
+const TRIP_START = new Date("2026-09-28T12:00:00+08:00"); // 9月28日抵达济南
+function tick(){
+  const now = new Date();
+  let diff = TRIP_START - now;
+  if(diff < 0) diff = 0;
+  const d = Math.floor(diff/86400000);
+  const h = Math.floor(diff%86400000/3600000);
+  const m = Math.floor(diff%3600000/60000);
+  const s = Math.floor(diff%60000/1000);
+  document.getElementById("cd-d").textContent = d;
+  document.getElementById("cd-h").textContent = String(h).padStart(2,"0");
+  document.getElementById("cd-m").textContent = String(m).padStart(2,"0");
+  document.getElementById("cd-s").textContent = String(s).padStart(2,"0");
+}
+tick(); setInterval(tick, 1000);
+
+/* ===== 总览地图（示意 SVG，坐标为真实经纬度投影） ===== */
+const LON0=116.983, LON1=117.047, LAT0=36.632, LAT1=36.692;
+const W=760, H=640, MG=30;
+const X = lon => MG + (lon-LON0)/(LON1-LON0)*(W-2*MG);
+const Y = lat => MG + (LAT1-lat)/(LAT1-LAT0)*(H-2*MG);
+const P = pts => pts.map(p=>X(p[0]).toFixed(1)+","+Y(p[1]).toFixed(1)).join(" ");
+
+const C = { d0:"#9aa0a6", d1:"#1a73e8", d2:"#d93025", d3:"#188038", water:"#bcd8f5", moat:"#7fb2e8",
+            road:"#c9c4b8", ink:"#5f6368", hotel:"#5f6368" };
+const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+if(dark){ C.water="#24405e"; C.moat="#4a78b0"; C.road="#4a4640"; C.ink="#9aa0a6"; C.hotel="#9aa0a6";
+          C.d1="#6ea8ff"; C.d2="#ff8673"; C.d3="#5cc07a"; }
+
+const svg = document.getElementById("mapsvg");
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent){ const e=document.createElementNS(NS,tag);
+  for(const k in attrs) e.setAttribute(k, attrs[k]); (parent||svg).appendChild(e); return e; }
+function txt(x,y,str,size,fill,anchor,weight){
+  const t=el("text",{x,y,"font-size":size||12,fill:fill||C.ink,"text-anchor":anchor||"middle",
+    "font-weight":weight||"normal"}); t.textContent=str; return t; }
+
+/* 大明湖 */
+el("polygon",{points:P([[117.005,36.6748],[117.009,36.6780],[117.016,36.6800],[117.024,36.6795],
+  [117.031,36.6770],[117.033,36.6740],[117.028,36.6726],[117.018,36.6722],[117.010,36.6728],[117.006,36.6735]]),
+  fill:C.water, stroke:C.moat,"stroke-width":1.5,"stroke-linejoin":"round"});
+txt(X(117.014),Y(36.6772),"大明湖",13,C.moat);
+/* 护城河（示意环线） */
+el("path",{d:"M"+P([[117.0085,36.6618],[117.0083,36.6710],[117.013,36.6725]])+
+  " L"+P([[117.0325,36.6722]])+" L"+P([[117.0348,36.6700],[117.0348,36.6622]])+
+  " L"+P([[117.030,36.6616],[117.0085,36.6618]]),
+  fill:"none",stroke:C.moat,"stroke-width":4,"stroke-linecap":"round","stroke-linejoin":"round",opacity:.75});
+txt(X(117.0205),Y(36.6604),"护城河",11,C.moat);
+/* 泉城路 / 经三路 */
+el("line",{x1:X(117.008),y1:Y(36.6652),x2:X(117.0335),y2:Y(36.6652),stroke:C.road,"stroke-width":3});
+txt(X(117.016),Y(36.6642),"泉城路",11,C.ink);
+el("line",{x1:X(116.986),y1:Y(36.6546),x2:X(117.006),y2:Y(36.6546),stroke:C.road,"stroke-width":3});
+txt(X(116.992),Y(36.6533),"经三路·老商埠",11,C.ink);
+/* 千佛山 */
+el("path",{d:`M${X(117.0361)},${Y(36.6405)} l9,14 h-18 z`,fill:C.d3,opacity:.8});
+txt(X(117.0361),Y(36.6375),"千佛山",12,C.d3);
+
+/* 景点 */
+const STOPS = [
+  {n:1, name:"解放阁",   lon:117.033627,lat:36.663178,day:1,dx:16,dy:-8},
+  {n:2, name:"黑虎泉",   lon:117.033525,lat:36.662414,day:1,dx:-14,dy:16},
+  {n:3, name:"泉水浴场", lon:117.034490,lat:36.662695,day:1,dx:18,dy:12},
+  {n:4, name:"宽厚里",   lon:117.030905,lat:36.663559,day:1,dx:-4,dy:20},
+  {n:5, name:"西更道街", lon:117.024714,lat:36.665457,day:1,dx:-16,dy:12},
+  {n:6, name:"王府池子", lon:117.023733,lat:36.667457,day:1,dx:-18,dy:-4},
+  {n:7, name:"曲水亭街", lon:117.024334,lat:36.670581,day:1,dx:-18,dy:-6},
+  {n:8, name:"大明湖南岸",lon:117.023837,lat:36.671976,day:1,dx:-18,dy:4},
+  {n:9, name:"超然楼",   lon:117.031996,lat:36.675188,day:1,dx:16,dy:-4},
+  {n:10,name:"五龙潭",   lon:117.014637,lat:36.665992,day:2,dx:-16,dy:-6},
+  {n:11,name:"趵突泉",   lon:117.015893,lat:36.661087,day:2,dx:-16,dy:10},
+  {n:12,name:"老商埠",   lon:116.994500,lat:36.654500,day:2,dx:0,dy:22},
+  {n:13,name:"大观园",   lon:116.996425,lat:36.660766,day:2,dx:18,dy:-6},
+  {n:"备",name:"大明湖·历下亭",lon:117.014500,lat:36.675500,day:0,dx:-16,dy:-6},
+  {n:15,name:"千佛山",   lon:117.036098,lat:36.639288,day:3,dx:18,dy:14},
+];
+const HOTEL = {lon:117.030577,lat:36.664925};
+
+/* 路线 */
+function route(lons_lats,color){
+  el("polyline",{points:P(lons_lats),fill:"none",stroke:color,"stroke-width":2.5,
+    "stroke-linecap":"round","stroke-linejoin":"round",opacity:.55});
+}
+route([[HOTEL.lon,HOTEL.lat],[117.033627,36.663178],[117.033525,36.662414],[117.034490,36.662695],
+  [117.030905,36.663559],[HOTEL.lon,HOTEL.lat],[117.024714,36.665457],[117.023733,36.667457],
+  [117.024334,36.670581],[117.023837,36.671976],[117.031996,36.675188]],C.d1);
+route([[117.014637,36.665992],[117.015893,36.661087],[116.994500,36.654500],[116.996425,36.660766]],C.d2);
+route([[117.014500,36.675500],[117.036098,36.639288]],C.d3);
+
+/* 住宿 */
+el("rect",{x:X(HOTEL.lon)-8,y:Y(HOTEL.lat)-8,width:16,height:16,rx:3,fill:C.hotel,stroke:"#fff","stroke-width":1.5});
+txt(X(HOTEL.lon),Y(HOTEL.lat)+4,"住",10,"#fff");
+txt(X(HOTEL.lon)-12,Y(HOTEL.lat)-12,"世茂",11,C.ink,"end","bold");
+
+/* 景点圆点＋编号＋名称 */
+for(const s of STOPS){
+  const x=X(s.lon), y=Y(s.lat), col=C["d"+s.day];
+  el("circle",{cx:x,cy:y,r:10,fill:col,stroke:"#fff","stroke-width":1.8});
+  txt(x,y+3.5,s.n,10,"#fff","middle","bold");
+  txt(x+s.dx,y+s.dy+3,s.name,11,dark?"#c8cdd4":"#3c4043", s.dx<0?"end":"start");
+}
+
+/* 山东博物馆：在地图外（城东约 8 公里），用边缘箭头标注 */
+(function(){
+  const x=W-MG-12, y=Y(36.6582);
+  el("circle",{cx:x,cy:y,r:10,fill:C.d3,stroke:"#fff","stroke-width":1.8});
+  txt(x,y+3.5,"14",10,"#fff","middle","bold");
+  txt(x-16,y+3,"⑭ 山东博物馆（城东 8km）→",11,dark?"#c8cdd4":"#3c4043","end");
+})();
+</script>
+</body>
+</html>
